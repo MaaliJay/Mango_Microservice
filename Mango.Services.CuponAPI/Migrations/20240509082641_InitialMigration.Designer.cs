@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mango.Services.CuponAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508142258_SeedData")]
-    partial class SeedData
+    [Migration("20240509082641_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,10 @@ namespace Mango.Services.CuponAPI.Migrations
             modelBuilder.Entity("Mango.Services.CuponAPI.Models.Cupon", b =>
                 {
                     b.Property<int>("CuponId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CuponId"));
 
                     b.Property<string>("CuponCode")
                         .IsRequired()
@@ -42,22 +45,6 @@ namespace Mango.Services.CuponAPI.Migrations
                     b.HasKey("CuponId");
 
                     b.ToTable("Cupons");
-
-                    b.HasData(
-                        new
-                        {
-                            CuponId = 1,
-                            CuponCode = "10OFF",
-                            DiscountAmount = 10.0,
-                            MinAmount = 20
-                        },
-                        new
-                        {
-                            CuponId = 2,
-                            CuponCode = "20OFF",
-                            DiscountAmount = 20.0,
-                            MinAmount = 40
-                        });
                 });
 #pragma warning restore 612, 618
         }

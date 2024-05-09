@@ -10,7 +10,7 @@ namespace Mango.Services.CuponAPI.Data
 
         public DbSet<Cupon> Cupons { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       /* protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Cupon>()
@@ -31,6 +31,6 @@ namespace Mango.Services.CuponAPI.Data
                     DiscountAmount = 20,
                     MinAmount = 40
                 });
-        }
+        }*/
     }
 }

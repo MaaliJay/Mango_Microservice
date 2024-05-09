@@ -2,8 +2,6 @@
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Mango.Services.CuponAPI.Migrations
 {
     /// <inheritdoc />
@@ -16,7 +14,8 @@ namespace Mango.Services.CuponAPI.Migrations
                 name: "Cupons",
                 columns: table => new
                 {
-                    CuponId = table.Column<int>(type: "int", nullable: false),
+                    CuponId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CuponCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DiscountAmount = table.Column<double>(type: "float", nullable: false),
                     MinAmount = table.Column<int>(type: "int", nullable: false)
@@ -24,15 +23,6 @@ namespace Mango.Services.CuponAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cupons", x => x.CuponId);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Cupons",
-                columns: new[] { "CuponId", "CuponCode", "DiscountAmount", "MinAmount" },
-                values: new object[,]
-                {
-                    { 1, "10OFF", 10.0, 20 },
-                    { 2, "20OFF", 20.0, 40 }
                 });
         }
 

@@ -6,7 +6,7 @@ namespace Mango.Services.CuponAPI.Models
     public class Cupon
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CuponId { get; set; }
         [Required]
         public string CuponCode { get; set; }
