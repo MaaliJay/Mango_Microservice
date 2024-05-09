@@ -44,7 +44,7 @@
 							@((item.MinAmount).ToString("c"))
 						</td>
 						<td>
-							<a asp-action="CuponDelete" accesskey="@item.CuponId" class="btn btn-danger">
+							<a asp-action="CuponDelete" asp-route-id="@item.CuponId" class="btn btn-danger">
 								<i class="bi bi-trash"></i>
 							</a>
 						</td>
