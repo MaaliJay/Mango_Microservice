@@ -3,6 +3,7 @@ using Mango.Services.AuthAPI.Models;
 using Mango.Services.AuthAPI.Models.DTO;
 using Mango.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.AuthAPI.Service
 {
@@ -20,10 +21,37 @@ namespace Mango.Services.AuthAPI.Service
         }
         public async Task<LogingResponseDTO> Login(LoginRequestDTO requestDTO)
         {
-            throw new NotImplementedException();
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName.ToLower()==requestDTO.UserName.ToLower());
+
+            bool isValid = await _userManager.CheckPasswordAsync(user,requestDTO.Password);
+            if (user == null || isValid == false)
+            {
+                return new LogingResponseDTO() 
+                { 
+                    User = null, 
+                    Token = ""
+                };
+            }
+
+            //If user found, generate JWT token
+
+            UserDTO userDTO = new()
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Id = user.Id,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            LogingResponseDTO responseDTO = new LogingResponseDTO()
+            {
+                User = userDTO,
+                Token = ""
+            };
+            return responseDTO;
         }
 
-        public async Task<UserDTO> Register(RegistrationRequestDTO registerDTO)
+        public async Task<string> Register(RegistrationRequestDTO registerDTO)
         {
             ApplicationUser user = new()
             {
@@ -48,14 +76,18 @@ namespace Mango.Services.AuthAPI.Service
                         PhoneNumber = usertoReturn.PhoneNumber
                     };
 
-                    return userDTO;
+                    return "";
+                }
+                else
+                {
+                    return result.Errors.FirstOrDefault().Description;
                 }
 
             }catch(Exception ex)
             {
 
             }
-            return new UserDTO();
+            return "Error Encountered";
         }
     }
 }
