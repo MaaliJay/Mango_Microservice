@@ -12,13 +12,31 @@ namespace Mango.Services.AuthAPI.Service
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IJwtTokenGenerator _jwtToken;
 
-        public AuthService(AppDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthService(AppDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtToken)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtToken = jwtToken;
         }
+
+        public async Task<bool> AssignRole(string email, string roleName)
+        {
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            if (user != null)
+            {
+                if(!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+                {
+                    _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+                }
+                await _userManager.AddToRoleAsync(user, roleName);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<LogingResponseDTO> Login(LoginRequestDTO requestDTO)
         {
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName.ToLower()==requestDTO.UserName.ToLower());
@@ -34,6 +52,7 @@ namespace Mango.Services.AuthAPI.Service
             }
 
             //If user found, generate JWT token
+            var token = _jwtToken.GenerateToken(user);
 
             UserDTO userDTO = new()
             {
@@ -46,7 +65,7 @@ namespace Mango.Services.AuthAPI.Service
             LogingResponseDTO responseDTO = new LogingResponseDTO()
             {
                 User = userDTO,
-                Token = ""
+                Token = token
             };
             return responseDTO;
         }

@@ -44,5 +44,19 @@ namespace Mango.Services.AuthAPI.Controllers
             _response.Result = logingResponse;
             return Ok(_response);
         }
+
+        [HttpPost("assignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDTO model)
+        {
+            var assignRole = await _service.AssignRole(model.Email,model.Role);
+            if (assignRole == null)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "Error rncountered..";
+                return BadRequest(_response);
+            }
+            _response.Result = assignRole;
+            return Ok(_response);
+        }
     }
 }
