@@ -1,6 +1,7 @@
 using Mango.Web.Service;
 using Mango.Web.Service.IService;
 using Mango.Web.Utility;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +13,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 
 //Inject Http Client Interfaces
-builder.Services.AddHttpClient<ICuponService, ICuponService>();
+builder.Services.AddHttpClient<ICuponService, CuponService>();
+builder.Services.AddHttpClient<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<ICuponService, CuponService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 //Add  Base service
 StaticDetails.CuponAPIBase = builder.Configuration["ServiceUrls:CuponAPI"];
+StaticDetails.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
 
 var app = builder.Build();
 
